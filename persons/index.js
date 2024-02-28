@@ -1,7 +1,10 @@
 const express = require("express")
 const morgan = require("morgan")
+const cors = require("cors")
 const app = express()
 app.use(express.json())
+app.use(cors())
+app.use(express.static("dist"))
 
 morgan.token("body", (req) => {
   if (req.method === "POST") {
@@ -101,6 +104,14 @@ app.post("/api/persons", (request, response) => {
   persons = persons.concat(newPerson)
 
   response.json(newPerson)
+})
+
+app.put("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id)
+  const updatedPerson = req.body
+  persons.map((person) => (person.id !== id ? person : updatedPerson))
+
+  res.json(updatedPerson)
 })
 
 const unknownEndpoint = (request, response) => {
